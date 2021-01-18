@@ -1,0 +1,39 @@
+import os
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+import time
+
+class parser():
+    def __init__(self):
+        self.browser = webdriver.Chrome('C:\\Users\\123\\PycharmProjects\\untitled\\venv\\chromedriver\\chromedriver.exe')
+
+    def open_txt(self):
+        browser = self.browser
+        browser.get('https://text.ru/seo')
+        time.sleep(5)
+
+        f = open('nord.txt', 'r')
+        for line in f:
+            try:
+                command = 'echo | set /p nul=' + line.strip() + '| clip'
+                os.system(command)
+
+                browser.get('https://text.ru/seo')
+                time.sleep(3)
+
+                browser.find_element_by_xpath('//*[@id="content"]/div[4]/form/textarea').send_keys(Keys.CONTROL, 'v')
+
+                time.sleep(20)
+
+            except Exception:
+                time.sleep(10)
+
+    def pars(self):
+        f = open('nord.txt', 'r')
+        for line in f:
+            command = 'echo | set /p nul=' + line.strip() + '| clip'
+            os.system(command)
+
+
+bot = parser()
+bot.open_txt()
