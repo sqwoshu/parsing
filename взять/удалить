@@ -6,4 +6,11 @@ with open("nord.txt","r") as f:
         stroka=line[i].split(' ')
         pyperclip.copy(line[0])
         s = pyperclip.paste()
-        print(s)
+f = open("nord.txt","r+")
+d = f.readlines()
+f.seek(0)
+for i in d:
+    if i != s:
+        f.write(i)
+f.truncate()
+f.close()
