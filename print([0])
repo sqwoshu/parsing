@@ -1,0 +1,9 @@
+import pyperclip
+line = {}
+with open("nord.txt","r") as f:
+    for i in range(1):
+        line[i] = f.readline()
+        stroka=line[i].split(' ')
+        pyperclip.copy(line[0])
+        s = pyperclip.paste()
+        print(s)
