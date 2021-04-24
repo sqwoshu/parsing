@@ -1,0 +1,48 @@
+from bs4 import BeautifulSoup
+import requests as req
+import pandas as pd
+import xlrd
+
+
+def pars():
+    spi,price,links = [],[],[]
+    url = 'https://steamcommunity.com/market/search?appid=730#p'
+    dop = '_popular_desc'
+    counter = 1
+    
+    HEADERS = {
+        'User-Agent':'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36'
+    }
+    res = req.get(url + str(counter) + dop,headers = HEADERS)
+    soup = BeautifulSoup(res.text,'lxml')
+    
+    titles = soup.find_all('span',class_='market_listing_item_name')
+    titles_price = soup.find_all('span', class_='market_table_value normal_price')
+    titles_links = soup.find_all('a',class_='market_listing_row_link')
+
+    for a in titles:
+        spi.append(a.text)
+        
+    for i in titles_price:
+        price.append(i.text)
+
+    for x in titles_links:
+        links.append(x['href'])
+
+    
+    df = pd.DataFrame()
+    df['Название'] = spi
+    df['Цена'] = price
+    df['Ссылка'] = links
+
+
+    writer = pd.ExcelWriter('./habr.xlsx', engine = 'xlsxwriter')
+    df.to_excel(writer,sheet_name='Лист1', index=False)
+
+    writer.sheets['Лист1'].set_column('A:A',50)
+    writer.sheets['Лист1'].set_column('B:B',50)
+    writer.sheets['Лист1'].set_column('C:C',100)
+    
+    writer.save()
+
+pars()
