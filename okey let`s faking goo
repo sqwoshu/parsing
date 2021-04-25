@@ -1,0 +1,48 @@
+from bs4 import BeautifulSoup
+import requests as req
+import pandas as pd
+import xlrd
+
+
+def pars():
+    titles,links,prices = [],[],[]
+    url = 'https://8800.ru/nedorogie-pamjatniki/?wpv_view_count=1820&wpv_paged='
+    counter = 1
+
+    headers = {
+        'User-Agent':'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36'
+    }
+
+    while counter < 5:
+            print(counter)
+            res = req.get(url+str(counter),headers)
+            soup = BeautifulSoup(res.text,'lxml')
+
+            title = soup.find_all('div',class_='item-link')
+            link = soup.find_all('a',class_='btn-empty')
+            price = soup.find_all('span',class_='item-price')
+
+            for i in title:
+                titles.append(i.text)
+            for x in link:
+                links.append(x['href'])
+            for p in price:
+                prices.append(p.text)
+
+            counter+=1
+
+    df = pd.DataFrame()
+    df['Название'] = titles
+    df['Ссылка'] = links
+    df['Цена'] = prices
+
+    writer = pd.ExcelWriter('./habr.xlsx', engine = 'xlsxwriter')
+    df.to_excel(writer,sheet_name='Лист1', index=False)
+
+    writer.sheets['Лист1'].set_column('A:A',50)
+    writer.sheets['Лист1'].set_column('B:B',30)
+    writer.sheets['Лист1'].set_column('C:C',20)
+    
+    writer.save()
+
+pars()
