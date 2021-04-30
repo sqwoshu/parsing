@@ -1,0 +1,54 @@
+from bs4 import BeautifulSoup
+import requests as req
+import xlrd
+import pandas as pd
+
+link = 'https://iklife.ru/sposoby-zarabotka/page/'
+
+def goparse(link):
+    times, titles, links, glass = [],[],[],[]
+    counter = 1
+
+    while counter < 4:
+        print(counter)
+        res = req.get(link+str(counter))
+        html = BeautifulSoup(res.text,'lxml')
+
+        times = html.find_all('div',class_='date')
+        titles = html.find_all('div',class_='name')
+        links = html.find_all('div',class_='name')
+        glass = html.find_all('div',class_='views')
+        
+        for i1 in time:
+            times.append(i1.text)
+
+        for i2 in title:
+            titles.append(i2.text)
+        
+        for i3 in link:
+            links.append(i3['href'])
+        
+        for i4 in glas:
+            glass.append(i4.text)
+
+        counter += 1
+
+    df = pd.DataFrame()
+    df['Время'] = times
+    df['Заголовок'] = titles
+    df['Ссылка'] = links
+    df['Просмотры'] = glass
+
+    writer = pd.ExcelWriter('./habr.xlsx', engine = 'xlswriter')
+    df.to_excel(writer,sheet_name='ЛИСТ1', index=False)
+
+    writer.sheets['ЛИСТ1'].set_column('A:A',20)
+    writer.sheets['ЛИСТ1'].set_column('B:B',50)
+    writer.sheets['ЛИСТ1'].set_column('C:C',120)
+    writer.sheets['ЛИСТ1'].set_column('D:D',20)
+
+    writer.save()
+
+
+
+goparse(link)
