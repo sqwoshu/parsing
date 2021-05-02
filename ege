@@ -1,0 +1,21 @@
+def frange(start,stop):
+    arr = []
+    while start <= stop:
+        arr.append(str(start))
+        if start + 1<= stop:
+            arr.append(str(start) + '.5')
+        start += 1
+    return arr
+
+p = set(frange(2,10))
+q = set(frange(6,14))
+
+
+def f(a,x):
+    return ((x in a) <= (x in p)) or (x in q)
+
+a=set()
+for x in frange(1,1000):
+    if not f(a,x):
+        a.add(x)
+print(sorted(a))
