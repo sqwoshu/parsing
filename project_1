@@ -1,0 +1,57 @@
+from bs4 import BeautifulSoup
+import requests as req
+import pandas as pd
+import xlrd
+
+
+def pars():
+    titles, links, da,data = [], [], [],[]
+    url = 'https://iklife.ru/sposoby-zarabotka/page/'
+    counter = 1
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36'
+    }
+
+    while counter <= 4:
+        print(counter)
+        res = req.get(url + str(counter), headers)
+        soup = BeautifulSoup(res.text, 'lxml')
+
+        osn = soup.find_all('div', class_='post')
+
+        for i in osn:
+            tit = i.find(class_='name').text
+            titles.append(tit)
+
+            lin = i.find('div', class_='name').find('a')
+            links.append(lin.get('href'))
+
+            dat = i.find('div',class_='views').text
+            data.append(dat)
+
+            data = [x.strip(' ') for x in data]
+            data = [x.strip('\n') for x in data]
+            data = [x.strip(' ') for x in data]
+
+        counter +=1
+
+    #print(titles)
+    #print(links)
+    #print(data)
+
+
+    df = pd.DataFrame()
+    df['Название'] = titles
+    df['Ссылка'] = links
+    df['Просмотры'] = data
+
+    writer = pd.ExcelWriter('./habr.xlsx', engine = 'xlsxwriter')
+    df.to_excel(writer,sheet_name='Лист1', index=False)
+
+    writer.sheets['Лист1'].set_column('A:A',115)
+    writer.sheets['Лист1'].set_column('B:B',90)
+    writer.sheets['Лист1'].set_column('C:C',15)
+
+    writer.save()
+
+pars()
