@@ -5,7 +5,7 @@ import xlrd
 
 
 def pars():
-    titles, links, da,data = [], [], [],[]
+    titles, links, da,data = [], [], [], []
     url = 'https://iklife.ru/sposoby-zarabotka/page/'
     counter = 1
     headers = {
@@ -17,17 +17,17 @@ def pars():
         res = req.get(url + str(counter), headers)
         soup = BeautifulSoup(res.text, 'lxml')
 
-        osn = soup.find_all('div', class_='post')
+        osn_post = soup.find_all('div', class_='post')
 
-        for i in osn:
-            tit = i.find(class_='name').text
-            titles.append(tit)
+        for i in osn_post:
+            title_text = i.find(class_='name').text
+            titles.append(title_text)
 
-            lin = i.find('div', class_='name').find('a')
-            links.append(lin.get('href'))
+            link_href = i.find('div', class_='name').find('a')
+            links.append(link_href.get('href'))
 
-            dat = i.find('div',class_='views').text
-            data.append(dat)
+            data_text = i.find('div',class_='views').text
+            data.append(data_text)
 
             data = [x.strip(' ') for x in data]
             data = [x.strip('\n') for x in data]
@@ -35,10 +35,10 @@ def pars():
 
         counter +=1
 
-    #print(titles)
-    #print(links)
-    #print(data)
 
+    titles = [titles[i] for i in range(len(titles)) if i == titles.index(titles[i])]
+    links = [links[i] for i in range(len(links)) if i == links.index(links[i])]
+    data = [data[i] for i in range(len(data)) if i == data.index(data[i])]
 
     df = pd.DataFrame()
     df['Название'] = titles
