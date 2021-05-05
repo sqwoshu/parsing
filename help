@@ -1,0 +1,23 @@
+    for per1 in titles:
+        if titles.count(per1) == 1:
+            titles_one.append(per1)
+    for per4 in titles:
+        if titles.count(per4) != 1:
+            titles_two.append(per4)
+    titles_two = list(set(titles_two))
+
+    for per2 in links:
+        if links.count(per2) == 1:
+            links_one.append(per2)
+    for per5 in links:
+        if links.count(per5) != 1:
+            links_two.append(per5)
+    links_two = list(set(links_two))
+
+    for per3 in data:
+        if data.count(per3) == 1:
+            datas_one.append(per3)
+    for per6 in data:
+        if data.count(per6) != 1:
+            datas_two.append(per6)
+    datas_two = list(set(datas_two))
