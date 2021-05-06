@@ -1,0 +1,53 @@
+from bs4 import BeautifulSoup
+import requests as req
+import pandas as pd
+import xlrd
+
+
+def pars():
+    titles, links,minor = [], [], []
+    counter = 1
+    url = 'https://sliv-info.com/forums/avtorskie-kursy.5/page-'
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36'
+    }
+
+    while counter <= 12:
+        print(counter)
+        res = req.get(url + str(counter), headers)
+        soup = BeautifulSoup(res.text, 'lxml')
+
+        posts = soup.find_all('li', class_='discussionListItem')
+
+        for i in posts:
+            title_txt = i.find(class_='title').get_text(strip=True)
+            titles.append(title_txt)
+
+            link_href = i.find_all('a')[2].get('href')
+            links.append('https://sliv-info.com/' + link_href)
+
+            minor_txt = i.find_all('dd')[1].get_text(strip=True)
+            minor.append(minor_txt)
+
+        counter += 1
+
+    titles =  [x.strip('Скачать') for x in titles]
+    titles =  [x.strip('Открыто') for x in titles]
+    titles =  [x.strip('Мегаслив') for x in titles]
+
+
+    df = pd.DataFrame()
+    df['Название'] = titles
+    df['Ссылки'] = links
+    df['Просмотры'] = minor
+
+    writer = pd.ExcelWriter('./hub_serv_12str.xlsx', engine = 'xlsxwriter')
+    df.to_excel(writer,sheet_name='Лист1', index=False)
+
+    writer.sheets['Лист1'].set_column('A:A',110)
+    writer.sheets['Лист1'].set_column('B:B',140)
+    writer.sheets['Лист1'].set_column('C:C',15)
+
+    writer.save()
+
+pars()
