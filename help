@@ -21,3 +21,15 @@
         if data.count(per6) != 1:
             datas_two.append(per6)
     datas_two = list(set(datas_two))
+    
+                            ------------------------------------------------------------------------------------------------------------------------
+                                                    
+url_title  = ['https://sliv-info.com/.#vip-podpiska.66', 'https://sliv-info.com/forums/chlenskij-status-vip.67/', 'https://sliv-info.com/forums/faq.68/']
+d = 'https://sliv-info.com/forums'
+s = [] 
+for i in url_title:
+    if i.startswith(d):
+        s.append(i)
+print(s)
+#вывод: ['https://sliv-info.com/forums/chlenskij-status-vip.67/', 'https://sliv-info.com/forums/faq.68/']
+ 
