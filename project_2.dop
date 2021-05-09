@@ -1,0 +1,54 @@
+from bs4 import BeautifulSoup
+import requests as req
+import pandas as pd
+import xlrd
+
+#url = 'https://sliv-info.com/forums/kursy-po-foto-i-video.10/page-34'
+#headers = {
+#        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36'
+#    }
+#res = req.get(url, headers)
+#src = res.text
+#with open('index.html','w',encoding='utf-8') as file:
+#    file.write(src)
+ 
+#with open('index.html',encoding='utf-8') as file:
+#    src = file.read()
+#soup = BeautifulSoup(src,'lxml')
+
+def url_pars():
+    url = 'https://sliv-info.com/'
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36'
+        }
+
+    res = req.get(url, headers)
+    soup = BeautifulSoup(res.text, 'lxml')
+
+    url_title = []
+
+    url_href = soup.find_all('h3',class_='nodeTitle')
+
+    for i in url_href:
+        href = i.find('a').get('href')
+        
+        url_title.append('https://sliv-info.com/' + href)
+
+
+    d = 'https://sliv-info.com/forums'
+    s = [] 
+    for i in url_title:
+        if i.startswith(d):
+            s.append(i)
+
+    for x in range(3):
+        del s[0]
+
+    while len(s) >25:
+        del s[-1]
+
+def pars(s):
+    print(s)
+
+url_pars()
+pars()
